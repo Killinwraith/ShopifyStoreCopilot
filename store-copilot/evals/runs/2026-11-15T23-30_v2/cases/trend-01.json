@@ -1,0 +1,386 @@
+{
+  "case": {
+    "id": "trend-01",
+    "category": "trends",
+    "question": "Show daily orders for the last 14 days",
+    "expect": {
+      "kind": "query",
+      "compare": "series",
+      "truthFn": "trend",
+      "args": {
+        "from": "2026-10-31",
+        "to": "2026-11-13",
+        "bucket": "day",
+        "metric": "count"
+      }
+    }
+  },
+  "expected": [
+    [
+      "2026-10-31",
+      4
+    ],
+    [
+      "2026-11-01",
+      6
+    ],
+    [
+      "2026-11-02",
+      2
+    ],
+    [
+      "2026-11-03",
+      1
+    ],
+    [
+      "2026-11-04",
+      1
+    ],
+    [
+      "2026-11-05",
+      1
+    ],
+    [
+      "2026-11-06",
+      7
+    ],
+    [
+      "2026-11-07",
+      0
+    ],
+    [
+      "2026-11-08",
+      4
+    ],
+    [
+      "2026-11-09",
+      3
+    ],
+    [
+      "2026-11-10",
+      3
+    ],
+    [
+      "2026-11-11",
+      0
+    ],
+    [
+      "2026-11-12",
+      2
+    ],
+    [
+      "2026-11-13",
+      0
+    ]
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      [
+        "2026-10-31",
+        4
+      ],
+      [
+        "2026-11-01",
+        6
+      ],
+      [
+        "2026-11-02",
+        2
+      ],
+      [
+        "2026-11-03",
+        1
+      ],
+      [
+        "2026-11-04",
+        1
+      ],
+      [
+        "2026-11-05",
+        1
+      ],
+      [
+        "2026-11-06",
+        7
+      ],
+      [
+        "2026-11-07",
+        0
+      ],
+      [
+        "2026-11-08",
+        4
+      ],
+      [
+        "2026-11-09",
+        3
+      ],
+      [
+        "2026-11-10",
+        3
+      ],
+      [
+        "2026-11-11",
+        0
+      ],
+      [
+        "2026-11-12",
+        2
+      ],
+      [
+        "2026-11-13",
+        0
+      ]
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Your daily orders for the last 14 days ranged from 0 to 7, with 4 orders on 2026-10-31 and 6 orders on 2026-11-01.",
+    "result": {
+      "columns": [
+        "day",
+        "orders"
+      ],
+      "rows": [
+        [
+          "2026-10-31",
+          4
+        ],
+        [
+          "2026-11-01",
+          6
+        ],
+        [
+          "2026-11-02",
+          2
+        ],
+        [
+          "2026-11-03",
+          1
+        ],
+        [
+          "2026-11-04",
+          1
+        ],
+        [
+          "2026-11-05",
+          1
+        ],
+        [
+          "2026-11-06",
+          7
+        ],
+        [
+          "2026-11-07",
+          0
+        ],
+        [
+          "2026-11-08",
+          4
+        ],
+        [
+          "2026-11-09",
+          3
+        ],
+        [
+          "2026-11-10",
+          3
+        ],
+        [
+          "2026-11-11",
+          0
+        ],
+        [
+          "2026-11-12",
+          2
+        ],
+        [
+          "2026-11-13",
+          0
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1770,
+      "outputTokens": 181,
+      "ms": 2740,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1769,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 688
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1081
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 130,
+          "prompt": "<question>Show daily orders for the last 14 days</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"count_orders\",\n  \"groupBy\": \"day\",\n  \"dateFrom\": \"2026-10-31\",\n  \"dateTo\": \"2026-11-13\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 50,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-10-30 processed_at:<=2026-11-14"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 11,
+          "columns": [
+            "day",
+            "orders"
+          ],
+          "rowCount": 14,
+          "rows": [
+            [
+              "2026-10-31",
+              4
+            ],
+            [
+              "2026-11-01",
+              6
+            ],
+            [
+              "2026-11-02",
+              2
+            ],
+            [
+              "2026-11-03",
+              1
+            ],
+            [
+              "2026-11-04",
+              1
+            ],
+            [
+              "2026-11-05",
+              1
+            ],
+            [
+              "2026-11-06",
+              7
+            ],
+            [
+              "2026-11-07",
+              0
+            ],
+            [
+              "2026-11-08",
+              4
+            ],
+            [
+              "2026-11-09",
+              3
+            ],
+            [
+              "2026-11-10",
+              3
+            ],
+            [
+              "2026-11-11",
+              0
+            ],
+            [
+              "2026-11-12",
+              2
+            ],
+            [
+              "2026-11-13",
+              0
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 958,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 170
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 788
+            }
+          ],
+          "prompt": "<question>Show daily orders for the last 14 days</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"day\",\"orders\"],\"rows\":[[\"2026-10-31\",4],[\"2026-11-01\",6],[\"2026-11-02\",2],[\"2026-11-03\",1],[\"2026-11-04\",1],[\"2026-11-05\",1],[\"2026-11-06\",7],[\"2026-11-07\",0],[\"2026-11-08\",4],[\"2026-11-09\",3],[\"2026-11-10\",3],[\"2026-11-11\",0],[\"2026-11-12\",2],[\"2026-11-13\",0]]}</data>",
+          "raw": "Your daily orders for the last 14 days ranged from 0 to 7, with 4 orders on 2026-10-31 and 6 orders on 2026-11-01.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 384,
+          "outputTokens": 51
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "count_orders",
+        "groupBy": "day",
+        "dateFrom": "2026-10-31",
+        "dateTo": "2026-11-13",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 50,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-10-30 processed_at:<=2026-11-14"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

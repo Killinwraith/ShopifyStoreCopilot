@@ -1,0 +1,71 @@
+{
+  "case": {
+    "id": "clar-01",
+    "category": "clarify",
+    "question": "What's my best product?",
+    "expect": {
+      "kind": "clarify"
+    }
+  },
+  "expected": {
+    "kind": "clarify"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "clarify"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "clarify",
+    "text": "Best by revenue or by units sold, and over what period?",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1382,
+      "outputTokens": 22,
+      "ms": 1421,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1417,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 551
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 865
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1382,
+          "outputTokens": 22,
+          "prompt": "<question>What's my best product?</question>",
+          "raw": "{\"kind\":\"clarify\",\"question\":\"Best by revenue or by units sold, and over what period?\"}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "clarify",
+        "question": "Best by revenue or by units sold, and over what period?"
+      },
+      "planAttempts": 1
+    }
+  }
+}

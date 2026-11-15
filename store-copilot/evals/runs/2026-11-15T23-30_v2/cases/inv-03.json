@@ -1,0 +1,235 @@
+{
+  "case": {
+    "id": "inv-03",
+    "category": "inventory",
+    "question": "Which products have 12 or fewer units left?",
+    "expect": {
+      "kind": "query",
+      "compare": "set",
+      "truthFn": "lowStock",
+      "args": {
+        "below": 13
+      }
+    }
+  },
+  "expected": [
+    "Notebook",
+    "Sticker Pack",
+    "Pen Set",
+    "Postcard Set",
+    "Cap"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Notebook",
+      "Sticker Pack",
+      "Pen Set",
+      "Postcard Set",
+      "Cap"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Filtered for inventory level 12 or fewer units, the products with 12 or fewer units left are Postcard Set, Sticker Pack, and Cap.",
+    "result": {
+      "columns": [
+        "product",
+        "type",
+        "in stock",
+        "price"
+      ],
+      "rows": [
+        [
+          "Postcard Set",
+          "Stationery",
+          5,
+          67.4
+        ],
+        [
+          "Sticker Pack",
+          "Stationery",
+          6,
+          74.34
+        ],
+        [
+          "Cap",
+          "Accessories",
+          10,
+          12.19
+        ],
+        [
+          "Notebook",
+          "Stationery",
+          10,
+          101.79
+        ],
+        [
+          "Pen Set",
+          "Stationery",
+          12,
+          37.9
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1667,
+      "outputTokens": 159,
+      "ms": 2656,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1489,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 528
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 961
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 127,
+          "prompt": "<question>Which products have 12 or fewer units left?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"inventory\",\n  \"metric\": \"list\",\n  \"groupBy\": \"none\",\n  \"dateFrom\": null,\n  \"dateTo\": null,\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": 13\n  },\n  \"sort\": \"asc\",\n  \"limit\": 50,\n  \"assumptions\": [\n    \"Filtered for inventory level 12 or fewer units\"\n  ]\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 0,
+          "template": "products",
+          "variables": {
+            "q": ""
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 20
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 0,
+          "columns": [
+            "product",
+            "type",
+            "in stock",
+            "price"
+          ],
+          "rowCount": 5,
+          "rows": [
+            [
+              "Postcard Set",
+              "Stationery",
+              5,
+              67.4
+            ],
+            [
+              "Sticker Pack",
+              "Stationery",
+              6,
+              74.34
+            ],
+            [
+              "Cap",
+              "Accessories",
+              10,
+              12.19
+            ],
+            [
+              "Notebook",
+              "Stationery",
+              10,
+              101.79
+            ],
+            [
+              "Pen Set",
+              "Stationery",
+              12,
+              37.9
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 1166,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 154
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1012
+            }
+          ],
+          "prompt": "<question>Which products have 12 or fewer units left?</question>\n<assumptions>[\"Filtered for inventory level 12 or fewer units\"]</assumptions>\n<data>{\"columns\":[\"product\",\"type\",\"in stock\",\"price\"],\"rows\":[[\"Postcard Set\",\"Stationery\",5,67.4],[\"Sticker Pack\",\"Stationery\",6,74.34],[\"Cap\",\"Accessories\",10,12.19],[\"Notebook\",\"Stationery\",10,101.79],[\"Pen Set\",\"Stationery\",12,37.9]]}</data>",
+          "raw": "Filtered for inventory level 12 or fewer units, the products with 12 or fewer units left are Postcard Set, Sticker Pack, and Cap.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 281,
+          "outputTokens": 32
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "inventory",
+        "metric": "list",
+        "groupBy": "none",
+        "dateFrom": null,
+        "dateTo": null,
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": 13
+        },
+        "sort": "asc",
+        "limit": 50,
+        "assumptions": [
+          "Filtered for inventory level 12 or fewer units"
+        ]
+      },
+      "planAttempts": 1,
+      "template": "products",
+      "variables": {
+        "q": ""
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

@@ -62,6 +62,7 @@ export async function generate(opts: {
         console.warn(`[llm] ${model} attempt ${attempt + 1}: ${e?.status ?? ""} ${String(e?.message).slice(0, 120)}`);
         if (e?.status === 404) break; // model unavailable: try the next one, keep the real error
         lastErr = e;
+        if (e?.status === 429) break; // quota exhausted for this model: switch now instead of waiting to retry it
         if (!RETRYABLE.includes(e?.status) && !String(e?.message).includes("timed out")) throw Object.assign(e, { attempts });
         await sleep(5000 * 3 ** attempt); // 5s, then 15s (free-tier per-minute limits)
       }

@@ -38,7 +38,7 @@ Today is ${today} (${dayName(today)}), store timezone ${timezone}. All dates are
   avg_order_value (revenue / orders), list (products or inventory only).
 - groupBy: none | product | product_type | day | week. Rankings use product or product_type. Trends use day or week.
 - filter: productTitleContains (a word from the product name, e.g. "hoodie"), productType, inventoryBelow (stock < N). Use null when not used.
-- sort: "desc" for top/best/most, "asc" for lowest/worst/least. limit: what the user asks for, default 10, max 50.
+- sort: "desc" for top/best/most, "asc" for lowest/worst/least. limit: what the user asks for, default 10, max 50. "all" or "every" = 50.
 - assumptions: short notes on any interpretation you made. Empty array if none.
 
 ## Refuse or clarify
@@ -84,6 +84,9 @@ function check(plan: Plan, today: string): string | null {
   if (plan.kind !== "query") return null;
   if (plan.dateFrom && plan.dateTo && plan.dateFrom > plan.dateTo) return "dateFrom is after dateTo";
   if ((plan.dateFrom ?? "") > today || (plan.dateTo ?? "") > today) return `dates must not be after ${today}`;
+  const yearAgo = `${+today.slice(0, 4) - 1}${today.slice(4)}`;
+  if (plan.dateFrom && plan.dateFrom < yearAgo)
+    return `dateFrom ${plan.dateFrom} is over a year ago. A date with no year means the most recent one on or before ${today}.`;
   return null;
 }
 

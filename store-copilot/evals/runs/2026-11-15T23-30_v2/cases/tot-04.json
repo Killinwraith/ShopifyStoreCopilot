@@ -1,0 +1,150 @@
+{
+  "case": {
+    "id": "tot-04",
+    "category": "totals",
+    "question": "How many orders in the last 7 days?",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "orderCount",
+      "args": {
+        "from": "2026-11-07",
+        "to": "2026-11-13"
+      }
+    }
+  },
+  "expected": 12,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 12,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming you mean all orders, there were 12 orders in the last 7 days.",
+    "result": {
+      "columns": [
+        "all",
+        "orders"
+      ],
+      "rows": [
+        [
+          "all",
+          12
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash"
+      ],
+      "inputTokens": 1578,
+      "outputTokens": 97,
+      "ms": 30342,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 11200,
+          "attempt": 1,
+          "model": "gemini-3.5-flash",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": true,
+              "ms": 11200
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1385,
+          "outputTokens": 78,
+          "prompt": "<question>How many orders in the last 7 days?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"count_orders\",\"groupBy\":\"none\",\"dateFrom\":\"2026-11-07\",\"dateTo\":\"2026-11-13\",\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":10,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 3,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-11-06 processed_at:<=2026-11-14"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 13,
+          "columns": [
+            "all",
+            "orders"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              12
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 19124,
+          "model": "gemini-3.5-flash",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": true,
+              "ms": 19124
+            }
+          ],
+          "prompt": "<question>How many orders in the last 7 days?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"orders\"],\"rows\":[[\"all\",12]]}</data>",
+          "raw": "Assuming you mean all orders, there were 12 orders in the last 7 days.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 193,
+          "outputTokens": 19
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "count_orders",
+        "groupBy": "none",
+        "dateFrom": "2026-11-07",
+        "dateTo": "2026-11-13",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-11-06 processed_at:<=2026-11-14"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}
