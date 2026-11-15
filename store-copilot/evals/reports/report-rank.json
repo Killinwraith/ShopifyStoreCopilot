@@ -1,0 +1,199 @@
+{
+  "summary": {
+    "label": "rank",
+    "date": "2026-11-15T19:58:34.846Z",
+    "today": "2026-11-13",
+    "score": "5/5",
+    "planAccuracy": "5/5",
+    "byCategory": {
+      "rankings": "5/5"
+    },
+    "hallucinationsCaught": 0,
+    "hallucinationsShown": 0,
+    "wrongRefusals": 0,
+    "p50ms": 12957,
+    "p95ms": 43722,
+    "avgTokens": 1716,
+    "models": [
+      "gemini-3.5-flash",
+      "gemini-3.5-flash-lite"
+    ]
+  },
+  "results": [
+    {
+      "id": "rank-01",
+      "category": "rankings",
+      "question": "Top 3 products by units sold in October",
+      "planOk": true,
+      "pass": true,
+      "why": "",
+      "kind": "answer",
+      "text": "The top 3 products by units sold in October are Pen Set with 39 units, Desk Planner with 33 units, and Keychain with 32 units.",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "product",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 3,
+        "assumptions": []
+      },
+      "numberCheck": "passed",
+      "usedFallback": false,
+      "ms": 11562,
+      "inputTokens": 1580,
+      "outputTokens": 112,
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash"
+      ]
+    },
+    {
+      "id": "rank-02",
+      "category": "rankings",
+      "question": "Top 5 products by revenue this month",
+      "planOk": true,
+      "pass": true,
+      "why": "",
+      "kind": "answer",
+      "text": "The top products by revenue this month are Hoodie with $1966.12, Joggers with $839.52, and Sticker Pack with $817.74.",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product",
+        "dateFrom": "2026-11-01",
+        "dateTo": "2026-11-13",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 5,
+        "assumptions": []
+      },
+      "numberCheck": "passed",
+      "usedFallback": false,
+      "ms": 3037,
+      "inputTokens": 1614,
+      "outputTokens": 171,
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash"
+      ]
+    },
+    {
+      "id": "rank-03",
+      "category": "rankings",
+      "question": "Which product type brought in the most revenue in October?",
+      "planOk": true,
+      "pass": true,
+      "why": "",
+      "kind": "answer",
+      "text": "Stationery brought in the most revenue in October with $7,927.88.",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product_type",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 1,
+        "assumptions": []
+      },
+      "numberCheck": "passed",
+      "usedFallback": false,
+      "ms": 25857,
+      "inputTokens": 1575,
+      "outputTokens": 151,
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite"
+      ]
+    },
+    {
+      "id": "rank-04",
+      "category": "rankings",
+      "question": "Top 3 product types by units sold last month",
+      "planOk": true,
+      "pass": true,
+      "why": "",
+      "kind": "answer",
+      "text": "The top 3 product types by units sold last month are Stationery with 140 units, Accessories with 135 units, and Apparel with 107 units.",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "product_type",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 3,
+        "assumptions": []
+      },
+      "numberCheck": "passed",
+      "usedFallback": false,
+      "ms": 12957,
+      "inputTokens": 1586,
+      "outputTokens": 116,
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash"
+      ]
+    },
+    {
+      "id": "rank-05",
+      "category": "rankings",
+      "question": "What was my best-selling product by revenue last week?",
+      "planOk": true,
+      "pass": true,
+      "why": "",
+      "kind": "answer",
+      "text": "Your best-selling product by revenue last week was Hoodie, with a revenue of $827.84.",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product",
+        "dateFrom": "2026-11-02",
+        "dateTo": "2026-11-08",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 1,
+        "assumptions": []
+      },
+      "numberCheck": "passed",
+      "usedFallback": false,
+      "ms": 43722,
+      "inputTokens": 1575,
+      "outputTokens": 101,
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ]
+    }
+  ]
+}
