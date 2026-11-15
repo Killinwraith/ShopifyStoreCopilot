@@ -1,0 +1,208 @@
+{
+  "case": {
+    "id": "rank-04",
+    "category": "rankings",
+    "question": "Top 3 product types by units sold last month",
+    "expect": {
+      "kind": "query",
+      "compare": "ranked",
+      "truthFn": "topTypes",
+      "args": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "by": "units",
+        "limit": 3
+      }
+    }
+  },
+  "expected": [
+    "Stationery",
+    "Accessories",
+    "Apparel"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Stationery",
+      "Accessories",
+      "Apparel"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "The top 3 product types by units sold last month are Stationery with 140 units, Accessories with 135 units, and Apparel with 107 units.",
+    "result": {
+      "columns": [
+        "product type",
+        "units"
+      ],
+      "rows": [
+        [
+          "Stationery",
+          140
+        ],
+        [
+          "Accessories",
+          135
+        ],
+        [
+          "Apparel",
+          107
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1586,
+      "outputTokens": 116,
+      "ms": 43681,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 22274,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 347
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 330
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1594
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1374,
+          "outputTokens": 79,
+          "prompt": "<question>Top 3 product types by units sold last month</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"sum_units\",\"groupBy\":\"product_type\",\"dateFrom\":\"2026-10-01\",\"dateTo\":\"2026-10-31\",\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":3,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 11,
+          "columns": [
+            "product type",
+            "units"
+          ],
+          "rowCount": 3,
+          "rows": [
+            [
+              "Stationery",
+              140
+            ],
+            [
+              "Accessories",
+              135
+            ],
+            [
+              "Apparel",
+              107
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 21390,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 203
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 333
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 851
+            }
+          ],
+          "prompt": "<question>Top 3 product types by units sold last month</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product type\",\"units\"],\"rows\":[[\"Stationery\",140],[\"Accessories\",135],[\"Apparel\",107]]}</data>",
+          "raw": "The top 3 product types by units sold last month are Stationery with 140 units, Accessories with 135 units, and Apparel with 107 units.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 212,
+          "outputTokens": 37
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "product_type",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 3,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

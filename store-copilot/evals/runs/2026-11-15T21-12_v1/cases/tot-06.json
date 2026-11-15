@@ -1,0 +1,183 @@
+{
+  "case": {
+    "id": "tot-06",
+    "category": "totals",
+    "question": "How many hoodies did I sell in October?",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "units",
+      "args": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "titleContains": "hoodie"
+      }
+    }
+  },
+  "expected": 17,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 17,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming the \"all\" category represents your hoodie sales, you sold 17 units in October.",
+    "result": {
+      "columns": [
+        "all",
+        "units"
+      ],
+      "rows": [
+        [
+          "all",
+          17
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1564,
+      "outputTokens": 99,
+      "ms": 43222,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 21937,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 323
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 298
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1313
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1372,
+          "outputTokens": 79,
+          "prompt": "<question>How many hoodies did I sell in October?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"sum_units\",\"groupBy\":\"none\",\"dateFrom\":\"2026-10-01\",\"dateTo\":\"2026-10-31\",\"filter\":{\"productTitleContains\":\"hoodie\",\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":10,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 3,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 11,
+          "columns": [
+            "all",
+            "units"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              17
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 21267,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 168
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 336
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 760
+            }
+          ],
+          "prompt": "<question>How many hoodies did I sell in October?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"units\"],\"rows\":[[\"all\",17]]}</data>",
+          "raw": "Assuming the \"all\" category represents your hoodie sales, you sold 17 units in October.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 192,
+          "outputTokens": 20
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "none",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": "hoodie",
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

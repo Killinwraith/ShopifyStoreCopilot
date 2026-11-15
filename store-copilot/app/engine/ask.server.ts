@@ -4,6 +4,7 @@ import { aggregate, localDate, UnsupportedPlan, type Result } from "./aggregate"
 import { writeAnswer } from "./answer.server";
 import type { DataSource } from "./fetch.server";
 import type { Plan } from "./plan";
+import type { Step } from "./trace";
 
 const REFUSALS = {
   write_action: "I'm read-only, so I can't change anything in your store. You can do that in the Shopify admin under Orders or Products.",
@@ -16,6 +17,8 @@ export type Trace = {
   plan?: Plan; template?: string; variables?: object; pages?: number; queryCost?: number; capped?: boolean;
   numberCheck?: "passed" | "failed"; usedFallback?: boolean; models: string[];
   inputTokens: number; outputTokens: number; ms: number; planAttempts?: number;
+  today?: string; timezone?: string;
+  steps: Step[]; // every step in order: plan attempts, fetch, aggregate, answer, error
 };
 export type AskResult = {
   kind: "answer" | "refuse" | "clarify" | "error";
@@ -36,7 +39,7 @@ const withTimeout = <T>(p: Promise<T>, ms: number) =>
 
 export async function ask(question: string, ds: DataSource, opts: { today?: string; timeoutMs?: number } = {}): Promise<AskResult> {
   const t0 = Date.now();
-  const trace: Trace = { models: [], inputTokens: 0, outputTokens: 0, ms: 0 };
+  const trace: Trace = { models: [], inputTokens: 0, outputTokens: 0, ms: 0, steps: [] };
   const done = (r: Omit<AskResult, "trace">): AskResult => ({ ...r, trace: { ...trace, ms: Date.now() - t0 } });
 
   if (!question.trim() || question.length > 500) return done({ kind: "error", text: "Please ask a question under 500 characters." });
@@ -45,8 +48,10 @@ export async function ask(question: string, ds: DataSource, opts: { today?: stri
     return await withTimeout((async () => {
       const tz = await ds.timezone();
       const today = opts.today ?? localDate(new Date().toISOString(), tz);
+      Object.assign(trace, { today, timezone: tz });
 
       const p = await makePlan(question, { today, timezone: tz });
+      trace.steps.push(...p.steps);
       Object.assign(trace, { plan: p.plan ?? undefined, planAttempts: p.attempts });
       trace.inputTokens += p.inputTokens; trace.outputTokens += p.outputTokens;
       if (p.model) trace.models.push(p.model);
@@ -57,17 +62,27 @@ export async function ask(question: string, ds: DataSource, opts: { today?: stri
 
       const plan = p.plan;
       const req = toRequest(plan);
+      const tf = Date.now();
       const f = await ds.fetchAll(req.template, req.q);
       Object.assign(trace, { template: f.template, variables: f.variables, pages: f.pages, queryCost: f.cost, capped: f.capped });
+      trace.steps.push({ step: "fetch", ok: true, ms: Date.now() - tf, template: f.template, variables: f.variables,
+        pages: f.pages, queryCost: f.cost, capped: f.capped, rowCount: f.rows.length });
 
       let result: Result;
-      try { result = aggregate(plan, f.rows, tz); }
-      catch (e) {
+      const tg = Date.now();
+      try {
+        result = aggregate(plan, f.rows, tz);
+        trace.steps.push({ step: "aggregate", ok: true, ms: Date.now() - tg, columns: result.columns,
+          rowCount: result.rows.length, rows: result.rows.slice(0, 50) });
+      } catch (e: any) {
+        trace.steps.push({ step: "aggregate", ok: false, ms: Date.now() - tg, error: String(e?.message),
+          unsupported: e instanceof UnsupportedPlan });
         if (e instanceof UnsupportedPlan) return done({ kind: "refuse", reason: "unsupported", text: REFUSALS.unsupported });
         throw e;
       }
 
       const a = await writeAnswer(question, plan, result);
+      trace.steps.push(a.step);
       Object.assign(trace, { numberCheck: a.numberCheck, usedFallback: a.usedFallback });
       trace.inputTokens += a.inputTokens; trace.outputTokens += a.outputTokens;
       if (a.model) trace.models.push(a.model);
@@ -76,6 +91,9 @@ export async function ask(question: string, ds: DataSource, opts: { today?: stri
       return done({ kind: "answer", text: a.text + note, result });
     })(), opts.timeoutMs ?? 30_000);
   } catch (e: any) {
+    trace.steps.push(...(e?.steps ?? []), { step: "error", ok: false, ms: Date.now() - t0,
+      error: String(e?.message).slice(0, 500), status: e?.status, llmAttempts: e?.attempts,
+      stack: e?.stack?.split("\n").slice(0, 5).join("\n") });
     return done({ kind: "error", text: e?.message === "timeout" ? "That took too long. Please try again." : "Something went wrong. Please try again." });
   }
 }

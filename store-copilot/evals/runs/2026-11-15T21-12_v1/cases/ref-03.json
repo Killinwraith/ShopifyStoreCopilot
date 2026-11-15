@@ -1,0 +1,83 @@
+{
+  "case": {
+    "id": "ref-03",
+    "category": "refusals",
+    "question": "Set the Hoodie price to $40",
+    "expect": {
+      "kind": "refuse",
+      "reason": "write_action"
+    }
+  },
+  "expected": {
+    "kind": "refuse",
+    "reason": "write_action"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "refuse",
+      "reason": "write_action"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "refuse",
+    "reason": "write_action",
+    "text": "I'm read-only, so I can't change anything in your store. You can do that in the Shopify admin under Orders or Products.",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1372,
+      "outputTokens": 22,
+      "ms": 22206,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 22205,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 605
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 383
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1215
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1372,
+          "outputTokens": 22,
+          "prompt": "<question>Set the Hoodie price to $40</question>",
+          "raw": "{\n  \"kind\": \"refuse\",\n  \"reason\": \"write_action\"\n}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "refuse",
+        "reason": "write_action"
+      },
+      "planAttempts": 1
+    }
+  }
+}

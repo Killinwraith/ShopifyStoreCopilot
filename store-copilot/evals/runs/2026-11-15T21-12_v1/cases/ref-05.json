@@ -1,0 +1,83 @@
+{
+  "case": {
+    "id": "ref-05",
+    "category": "refusals",
+    "question": "What's my conversion rate this month?",
+    "expect": {
+      "kind": "refuse",
+      "reason": "unsupported"
+    }
+  },
+  "expected": {
+    "kind": "refuse",
+    "reason": "unsupported"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "refuse",
+      "reason": "unsupported"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "refuse",
+    "reason": "unsupported",
+    "text": "I can't answer that from order and inventory data. Try the Shopify admin under Analytics.",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1372,
+      "outputTokens": 11,
+      "ms": 21987,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 21986,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 371
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 383
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1229
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1372,
+          "outputTokens": 11,
+          "prompt": "<question>What's my conversion rate this month?</question>",
+          "raw": "{\"kind\":\"refuse\",\"reason\":\"unsupported\"}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "refuse",
+        "reason": "unsupported"
+      },
+      "planAttempts": 1
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Plan } from "./plan";
 import { generate } from "./llm.server";
+import type { Step } from "./trace";
 
 // Gemini accepts a subset of JSON Schema: drop $schema and additionalProperties, and turn oneOf into anyOf.
 function toGeminiSchema(s: any): any {
@@ -17,7 +18,7 @@ const PLAN_SCHEMA = toGeminiSchema(z.toJSONSchema(Plan));
 
 const dayName = (d: string) => new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { weekday: "long", timeZone: "UTC" });
 
-function systemPrompt(today: string, timezone: string) {
+export function systemPrompt(today: string, timezone: string) {
   return `You turn a Shopify merchant's question into a JSON query plan. You never answer the question and never compute numbers.
 
 Today is ${today} (${dayName(today)}), store timezone ${timezone}. All dates are YYYY-MM-DD, inclusive, in store time.
@@ -76,6 +77,7 @@ Today is ${today} (${dayName(today)}), store timezone ${timezone}. All dates are
 export type PlanOutcome = {
   plan: Plan | null; error?: string; attempts: number; model?: string;
   inputTokens: number; outputTokens: number; ms: number;
+  steps: Step[]; // one per attempt: prompt, raw model output, validation error
 };
 
 function check(plan: Plan, today: string): string | null {
@@ -88,20 +90,28 @@ function check(plan: Plan, today: string): string | null {
 export async function makePlan(question: string, ctx: { today: string; timezone: string }): Promise<PlanOutcome> {
   const system = systemPrompt(ctx.today, ctx.timezone);
   const base = `<question>${question}</question>`;
-  const out: PlanOutcome = { plan: null, attempts: 0, inputTokens: 0, outputTokens: 0, ms: 0 };
+  const out: PlanOutcome = { plan: null, attempts: 0, inputTokens: 0, outputTokens: 0, ms: 0, steps: [] };
   let prompt = base;
 
   for (let i = 0; i < 2; i++) { // first try plus one retry with the error appended
-    const r = await generate({ system, prompt, maxTokens: 1000, jsonSchema: PLAN_SCHEMA });
+    let r;
+    try { r = await generate({ system, prompt, maxTokens: 1000, jsonSchema: PLAN_SCHEMA }); }
+    catch (e: any) { throw Object.assign(e, { steps: out.steps }); } // keep earlier attempts for the trace
     out.attempts++; out.model = r.model; out.ms += r.ms;
     out.inputTokens += r.inputTokens; out.outputTokens += r.outputTokens;
 
-    let err: string;
+    let err = "";
+    let valid: Plan | null = null;
     try {
       const parsed = Plan.safeParse(JSON.parse(r.text));
-      err = parsed.success ? (check(parsed.data, ctx.today) ?? "") : z.prettifyError(parsed.error);
-      if (!err && parsed.success) { out.plan = parsed.data; return out; }
+      if (parsed.success) { err = check(parsed.data, ctx.today) ?? ""; if (!err) valid = parsed.data; }
+      else err = z.prettifyError(parsed.error);
     } catch { err = "Output was not valid JSON."; }
+
+    out.steps.push({ step: "plan", ok: !!valid, ms: r.ms, attempt: i + 1, model: r.model, llmAttempts: r.attempts,
+      truncated: r.truncated, inputTokens: r.inputTokens, outputTokens: r.outputTokens,
+      prompt, raw: r.text, error: err || undefined });
+    if (valid) { out.plan = valid; return out; }
 
     out.error = err;
     prompt = `${base}\n\nYour previous plan was invalid:\n${err}\nReturn a corrected plan.`;

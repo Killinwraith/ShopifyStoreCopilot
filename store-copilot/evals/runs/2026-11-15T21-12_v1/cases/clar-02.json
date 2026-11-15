@@ -1,0 +1,79 @@
+{
+  "case": {
+    "id": "clar-02",
+    "category": "clarify",
+    "question": "Show me my top items",
+    "expect": {
+      "kind": "clarify"
+    }
+  },
+  "expected": {
+    "kind": "clarify"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "clarify"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "clarify",
+    "text": "Top items by revenue or by units sold, and over what period?",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1369,
+      "outputTokens": 23,
+      "ms": 21923,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 21921,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 358
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 376
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1187
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1369,
+          "outputTokens": 23,
+          "prompt": "<question>Show me my top items</question>",
+          "raw": "{\"kind\":\"clarify\",\"question\":\"Top items by revenue or by units sold, and over what period?\"}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "clarify",
+        "question": "Top items by revenue or by units sold, and over what period?"
+      },
+      "planAttempts": 1
+    }
+  }
+}

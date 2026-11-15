@@ -1,0 +1,177 @@
+{
+  "case": {
+    "id": "inv-02",
+    "category": "inventory",
+    "question": "What's out of stock right now?",
+    "expect": {
+      "kind": "query",
+      "compare": "set",
+      "truthFn": "lowStock",
+      "args": {
+        "below": 1
+      }
+    }
+  },
+  "expected": [],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Based on the assumption that out of stock is defined as inventory below 1, there are currently no products out of stock.",
+    "result": {
+      "columns": [
+        "product",
+        "type",
+        "in stock",
+        "price"
+      ],
+      "rows": []
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1575,
+      "outputTokens": 92,
+      "ms": 43710,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 21889,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 380
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 315
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1192
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1372,
+          "outputTokens": 67,
+          "prompt": "<question>What's out of stock right now?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"inventory\",\"metric\":\"list\",\"groupBy\":\"none\",\"dateFrom\":null,\"dateTo\":null,\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":1},\"sort\":\"asc\",\"limit\":50,\"assumptions\":[\"Out of stock defined as inventory below 1\"]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "products",
+          "variables": {
+            "q": ""
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 20
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 0,
+          "columns": [
+            "product",
+            "type",
+            "in stock",
+            "price"
+          ],
+          "rowCount": 0,
+          "rows": []
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 21817,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 147
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 558
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1110
+            }
+          ],
+          "prompt": "<question>What's out of stock right now?</question>\n<assumptions>[\"Out of stock defined as inventory below 1\"]</assumptions>\n<data>{\"columns\":[\"product\",\"type\",\"in stock\",\"price\"],\"rows\":[]}</data>",
+          "raw": "Based on the assumption that out of stock is defined as inventory below 1, there are currently no products out of stock.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 203,
+          "outputTokens": 25
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "inventory",
+        "metric": "list",
+        "groupBy": "none",
+        "dateFrom": null,
+        "dateTo": null,
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": 1
+        },
+        "sort": "asc",
+        "limit": 50,
+        "assumptions": [
+          "Out of stock defined as inventory below 1"
+        ]
+      },
+      "planAttempts": 1,
+      "template": "products",
+      "variables": {
+        "q": ""
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

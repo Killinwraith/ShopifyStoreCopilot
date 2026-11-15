@@ -1,0 +1,212 @@
+{
+  "case": {
+    "id": "rank-03",
+    "category": "rankings",
+    "question": "Which product type brought in the most revenue in October?",
+    "expect": {
+      "kind": "query",
+      "compare": "ranked",
+      "truthFn": "topTypes",
+      "args": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "by": "revenue",
+        "limit": 1
+      }
+    }
+  },
+  "expected": [
+    "Stationery"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Stationery"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Stationery brought in the most revenue in October with $7,927.88.",
+    "result": {
+      "columns": [
+        "product type",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "Stationery",
+          7927.88
+        ],
+        [
+          "Apparel",
+          6775.28
+        ],
+        [
+          "Accessories",
+          6202.65
+        ],
+        [
+          "Drinkware",
+          5543.61
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1610,
+      "outputTokens": 100,
+      "ms": 43710,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 21954,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 407
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 389
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1157
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1374,
+          "outputTokens": 80,
+          "prompt": "<question>Which product type brought in the most revenue in October?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"sum_revenue\",\"groupBy\":\"product_type\",\"dateFrom\":\"2026-10-01\",\"dateTo\":\"2026-10-31\",\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":10,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 3,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 12,
+          "columns": [
+            "product type",
+            "revenue"
+          ],
+          "rowCount": 4,
+          "rows": [
+            [
+              "Stationery",
+              7927.88
+            ],
+            [
+              "Apparel",
+              6775.28
+            ],
+            [
+              "Accessories",
+              6202.65
+            ],
+            [
+              "Drinkware",
+              5543.61
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 21737,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 184
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 2,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 401
+            },
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1150
+            }
+          ],
+          "prompt": "<question>Which product type brought in the most revenue in October?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product type\",\"revenue\"],\"rows\":[[\"Stationery\",7927.88],[\"Apparel\",6775.28],[\"Accessories\",6202.65],[\"Drinkware\",5543.61]]}</data>",
+          "raw": "Stationery brought in the most revenue in October with $7,927.88.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 236,
+          "outputTokens": 20
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product_type",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}
