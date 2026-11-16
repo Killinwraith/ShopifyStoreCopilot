@@ -1,352 +1,176 @@
-import { useEffect } from "react";
-import type {
-  ActionFunctionArgs,
-  HeadersFunction,
-  LoaderFunctionArgs,
-} from "react-router";
+import { useState } from "react";
+import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { useFetcher } from "react-router";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { authenticate } from "../shopify.server";
 import { boundary } from "@shopify/shopify-app-react-router/server";
+import { authenticate } from "../shopify.server";
+import { ask, rateLimited, type AskResult } from "../engine/ask.server";
+import { ShopifyDataSource } from "../engine/fetch.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
-
   return null;
 };
 
+// Runs on the server only: the Gemini key and all model calls never reach the browser.
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-            demoInfo: metafield(namespace: "$app", key: "demo_info") {
-              jsonValue
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        product: {
-          title: `${color} Snowboard`,
-          metafields: [
-            {
-              namespace: "$app",
-              key: "demo_info",
-              value: "Created by React Router Template",
-            },
-          ],
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-
-  const product = responseJson.data!.productCreate!.product!;
-  const variantId = product.variants.edges[0]!.node!.id!;
-
-  const variantResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyReactRouterTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
-          id
-          price
-          barcode
-          createdAt
-        }
-      }
-    }`,
-    {
-      variables: {
-        productId: product.id,
-        variants: [{ id: variantId, price: "100.00" }],
-      },
-    },
-  );
-
-  const variantResponseJson = await variantResponse.json();
-
-  const metaobjectResponse = await admin.graphql(
-    `#graphql
-    mutation shopifyReactRouterTemplateUpsertMetaobject($handle: MetaobjectHandleInput!, $values: JSON!) {
-      metaobjectUpsert(handle: $handle, values: $values) {
-        metaobject {
-          id
-          handle
-          values
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }`,
-    {
-      variables: {
-        handle: {
-          type: "$app:example",
-          handle: "demo-entry",
-        },
-        values: {
-          title: "Demo Entry",
-          description:
-            "This metaobject was created by the Shopify app template to demonstrate the metaobject API.",
-        },
-      },
-    },
-  );
-
-  const metaobjectResponseJson = await metaobjectResponse.json();
-
-  return {
-    product: responseJson!.data!.productCreate!.product,
-    variant:
-      variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants,
-    metaobject: metaobjectResponseJson!.data!.metaobjectUpsert!.metaobject,
-  };
+  const { admin, session } = await authenticate.admin(request);
+  const question = String((await request.formData()).get("question") ?? "").trim();
+  if (rateLimited(session.shop)) {
+    const r: AskResult = { kind: "error", text: "That's more than 10 questions this minute. Please wait a moment.",
+      trace: { models: [], inputTokens: 0, outputTokens: 0, ms: 0, steps: [] } };
+    return { ...r, question };
+  }
+  const ds = new ShopifyDataSource(async (query, variables) => (await admin.graphql(query, { variables })).json());
+  return { ...(await ask(question, ds)), question };
 };
+
+const SUGGESTED = [
+  "Sales last 7 days",
+  "Top 5 products by revenue this month",
+  "Which products have under 10 units left?",
+  "Orders per day, last 14 days",
+];
+const MONEY = new Set(["revenue", "average order value", "price"]);
+const fmt = (col: string, v: string | number) =>
+  typeof v !== "number" ? v
+  : MONEY.has(col) ? `$${v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  : v.toLocaleString("en-US");
+
+type Data = AskResult & { question: string };
 
 export default function Index() {
   const fetcher = useFetcher<typeof action>();
+  const [question, setQuestion] = useState("");
+  const loading = fetcher.state !== "idle";
 
-  const shopify = useAppBridge();
-  const isLoading =
-    ["loading", "submitting"].includes(fetcher.state) &&
-    fetcher.formMethod === "POST";
-
-  useEffect(() => {
-    if (fetcher.data?.product?.id) {
-      shopify.toast.show("Product created");
-    }
-  }, [fetcher.data?.product?.id, shopify]);
-
-  const generateProduct = () => fetcher.submit({}, { method: "POST" });
+  const submit = (q: string) => {
+    if (!q.trim() || loading) return;
+    setQuestion(q);
+    fetcher.submit({ question: q }, { method: "POST" });
+  };
 
   return (
-    <s-page heading="Shopify app template">
-      <s-button slot="primary-action" onClick={generateProduct}>
-        Generate a product
-      </s-button>
-
-      <s-section heading="Congrats on creating a new Shopify app 🎉">
-        <s-paragraph>
-          This embedded app template uses{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/tools/app-bridge"
-            target="_blank"
-          >
-            App Bridge
-          </s-link>{" "}
-          interface examples like an{" "}
-          <s-link href="/app/additional">additional page in the app nav</s-link>
-          , as well as an{" "}
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql"
-            target="_blank"
-          >
-            Admin GraphQL
-          </s-link>{" "}
-          mutation demo, to provide a starting point for app development.
-        </s-paragraph>
-      </s-section>
-      <s-section heading="Get started with products">
-        <s-paragraph>
-          Generate a product with GraphQL and get the JSON output for that
-          product. Learn more about the{" "}
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-            target="_blank"
-          >
-            productCreate
-          </s-link>{" "}
-          mutation in our API references. Includes a product{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/build/custom-data/metafields"
-            target="_blank"
-          >
-            metafield
-          </s-link>{" "}
-          and{" "}
-          <s-link
-            href="https://shopify.dev/docs/apps/build/custom-data/metaobjects"
-            target="_blank"
-          >
-            metaobject
-          </s-link>
-          .
-        </s-paragraph>
-        <s-stack direction="inline" gap="base">
-          <s-button
-            onClick={generateProduct}
-            {...(isLoading ? { loading: true } : {})}
-          >
-            Generate a product
-          </s-button>
-          {fetcher.data?.product && (
-            <s-button
-              onClick={() => {
-                shopify.intents.invoke?.("edit:shopify/Product", {
-                  value: fetcher.data?.product?.id,
-                });
-              }}
-              target="_blank"
-              variant="tertiary"
-            >
-              Edit product
-            </s-button>
-          )}
-        </s-stack>
-        {fetcher.data?.product && (
-          <s-section heading="productCreate mutation">
-            <s-stack direction="block" gap="base">
-              <s-box
-                padding="base"
-                borderWidth="base"
-                borderRadius="base"
-                background="subdued"
-              >
-                <pre
-                  style={{
-                    margin: 0,
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  <code>{JSON.stringify(fetcher.data.product, null, 2)}</code>
-                </pre>
-              </s-box>
-
-              <s-heading>productVariantsBulkUpdate mutation</s-heading>
-              <s-box
-                padding="base"
-                borderWidth="base"
-                borderRadius="base"
-                background="subdued"
-              >
-                <pre
-                  style={{
-                    margin: 0,
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  <code>{JSON.stringify(fetcher.data.variant, null, 2)}</code>
-                </pre>
-              </s-box>
-
-              <s-heading>metaobjectUpsert mutation</s-heading>
-              <s-box
-                padding="base"
-                borderWidth="base"
-                borderRadius="base"
-                background="subdued"
-              >
-                <pre
-                  style={{
-                    margin: 0,
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  <code>
-                    {JSON.stringify(fetcher.data.metaobject, null, 2)}
-                  </code>
-                </pre>
-              </s-box>
+    <s-page heading="Store Copilot">
+      <s-section>
+        <s-stack gap="base">
+          <s-paragraph>Read-only. Every number is computed from your store data.</s-paragraph>
+          <form onSubmit={(e) => { e.preventDefault(); submit(question); }}>
+            <s-stack gap="base">
+              <s-text-field
+                label="Ask about your sales, products or inventory"
+                name="question"
+                value={question}
+                placeholder="e.g. Top 5 products by revenue this month"
+                onInput={(e) => setQuestion(e.currentTarget.value ?? "")}
+              />
+              <s-stack direction="inline" gap="base">
+                <s-button variant="primary" type="submit" loading={loading}>Ask</s-button>
+                {SUGGESTED.map((q) => (
+                  <s-button key={q} onClick={() => submit(q)} disabled={loading}>{q}</s-button>
+                ))}
+              </s-stack>
             </s-stack>
-          </s-section>
-        )}
+          </form>
+        </s-stack>
       </s-section>
 
-      <s-section slot="aside" heading="App template specs">
-        <s-paragraph>
-          <s-text>Framework: </s-text>
-          <s-link href="https://reactrouter.com/" target="_blank">
-            React Router
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>Interface: </s-text>
-          <s-link
-            href="https://shopify.dev/docs/api/app-home/using-polaris-components"
-            target="_blank"
-          >
-            Polaris web components
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>API: </s-text>
-          <s-link
-            href="https://shopify.dev/docs/api/admin-graphql"
-            target="_blank"
-          >
-            GraphQL
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>Custom data: </s-text>
-          <s-link
-            href="https://shopify.dev/docs/apps/build/custom-data"
-            target="_blank"
-          >
-            Metafields &amp; metaobjects
-          </s-link>
-        </s-paragraph>
-        <s-paragraph>
-          <s-text>Database: </s-text>
-          <s-link href="https://www.prisma.io/" target="_blank">
-            Prisma
-          </s-link>
-        </s-paragraph>
-      </s-section>
-
-      <s-section slot="aside" heading="Next steps">
-        <s-unordered-list>
-          <s-list-item>
-            Build an{" "}
-            <s-link
-              href="https://shopify.dev/docs/apps/getting-started/build-app-example"
-              target="_blank"
-            >
-              example app
-            </s-link>
-          </s-list-item>
-          <s-list-item>
-            Explore Shopify&apos;s API with{" "}
-            <s-link
-              href="https://shopify.dev/docs/apps/tools/graphiql-admin-api"
-              target="_blank"
-            >
-              GraphiQL
-            </s-link>
-          </s-list-item>
-        </s-unordered-list>
-      </s-section>
+      {fetcher.data && !loading && <ResultView r={fetcher.data as Data} onAsk={submit} />}
     </s-page>
   );
 }
 
-export const headers: HeadersFunction = (headersArgs) => {
-  return boundary.headers(headersArgs);
-};
+function ResultView({ r, onAsk }: { r: Data; onAsk: (q: string) => void }) {
+  if (r.kind === "refuse")
+    return (
+      <s-section>
+        <s-banner tone="warning" heading="I can't do that">{r.text}</s-banner>
+      </s-section>
+    );
+
+  if (r.kind === "error")
+    return (
+      <s-section>
+        <s-stack gap="base">
+          <s-banner tone="critical">{r.text}</s-banner>
+          <HowIGotThis r={r} />
+        </s-stack>
+      </s-section>
+    );
+
+  if (r.kind === "clarify")
+    return (
+      <s-section heading="Quick question">
+        <s-stack gap="base">
+          <s-paragraph>{r.text}</s-paragraph>
+          <s-stack direction="inline" gap="base">
+            <s-button onClick={() => onAsk(`${r.question} by revenue`)}>By revenue</s-button>
+            <s-button onClick={() => onAsk(`${r.question} by units sold`)}>By units sold</s-button>
+          </s-stack>
+        </s-stack>
+      </s-section>
+    );
+
+  const res = r.result!;
+  const plan = r.trace.plan?.kind === "query" ? r.trace.plan : null;
+  return (
+    <s-section heading="Answer">
+      <s-stack gap="base">
+        <s-paragraph>{r.text}</s-paragraph>
+        {plan && plan.assumptions.length > 0 && (
+          <s-paragraph>
+            <small>Assumptions: {plan.assumptions.join("; ")}</small>
+          </s-paragraph>
+        )}
+        {res.rows.length > 0 && (plan?.groupBy !== "none" || plan?.metric === "list") && (
+          <s-table>
+            <s-table-header-row>
+              {res.columns.map((c, i) => (
+                <s-table-header key={c}
+                  format={MONEY.has(c) ? "currency" : typeof res.rows[0][i] === "number" ? "numeric" : "base"}>
+                  {c}
+                </s-table-header>
+              ))}
+            </s-table-header-row>
+            <s-table-body>
+              {res.rows.map((row, i) => (
+                <s-table-row key={i}>
+                  {row.map((v, j) => <s-table-cell key={j}>{fmt(res.columns[j], v)}</s-table-cell>)}
+                </s-table-row>
+              ))}
+            </s-table-body>
+          </s-table>
+        )}
+        <HowIGotThis r={r} />
+      </s-stack>
+    </s-section>
+  );
+}
+
+// Collapsed by default: the plan, the fixed query used, and the checks.
+function HowIGotThis({ r }: { r: Data }) {
+  const t = r.trace;
+  return (
+    <details>
+      <summary>How I got this</summary>
+      {t.steps.filter((s) => !s.ok).map((s, i) => (
+        <s-paragraph key={i}><b>{s.step} failed</b> ({((s.llmAttempts as any[]) ?? []).map((a) => a.model).join(" → ") || "no model"}): {String(s.error ?? s.rejectedReason ?? "")}</s-paragraph>
+      ))}
+      <s-stack gap="base">
+        <s-paragraph>
+          Query template: <b>{t.template ?? "none (no data fetched)"}</b> · Pages fetched: {t.pages ?? 0} ·
+          Query cost: {t.queryCost ?? 0} · Time: {(t.ms / 1000).toFixed(1)}s
+        </s-paragraph>
+        <s-paragraph>
+          Number check: <b>{t.numberCheck ?? "n/a"}</b>
+          {t.usedFallback ? " (model reply rejected, so this sentence was built from the table)" : ""}
+          {" · "}Models: {t.models.join(", ") || "none"}
+        </s-paragraph>
+        <pre style={{ whiteSpace: "pre-wrap", fontSize: 12, margin: 0 }}>
+          {JSON.stringify({ plan: t.plan, variables: t.variables }, null, 2)}
+        </pre>
+      </s-stack>
+    </details>
+  );
+}
+
+export const headers: HeadersFunction = (headersArgs) => boundary.headers(headersArgs);

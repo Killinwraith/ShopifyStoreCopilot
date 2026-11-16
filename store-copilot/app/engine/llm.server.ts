@@ -1,6 +1,8 @@
 import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import type { LlmAttempt } from "./trace";
 
+try { process.loadEnvFile(); } catch {} // dev server doesn't load .env; existing env vars win
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { timeout: 30_000 } });
 
 // First model that answers wins. Override the first choice with GEMINI_MODEL in .env.
@@ -16,6 +18,8 @@ export type LlmResult = {
   text: string; model: string; inputTokens: number; outputTokens: number; ms: number; truncated: boolean;
   attempts: LlmAttempt[]; // every model/attempt tried, including failures
 };
+
+const noThinkingCfg = new Set<string>(); // models that reject thinkingLevel
 
 export async function generate(opts: {
   system: string;
@@ -38,7 +42,8 @@ export async function generate(opts: {
             systemInstruction: opts.system,
             maxOutputTokens: opts.maxTokens,
             temperature: 0,
-            thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL }, // thinking tokens count against maxOutputTokens
+            // thinking tokens count against maxOutputTokens, so keep them minimal where the model allows it
+            ...(noThinkingCfg.has(model) ? {} : { thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL } }),
             ...(opts.jsonSchema !== undefined
               ? { responseMimeType: "application/json", responseJsonSchema: opts.jsonSchema }
               : {}),
@@ -60,6 +65,9 @@ export async function generate(opts: {
         attempts.push({ model, attempt: attempt + 1, ok: false, status: e?.status,
           error: String(e?.message).slice(0, 300), ms: Date.now() - ta });
         console.warn(`[llm] ${model} attempt ${attempt + 1}: ${e?.status ?? ""} ${String(e?.message).slice(0, 120)}`);
+        if (e?.status === 400 && /thinking/i.test(String(e?.message)) && !noThinkingCfg.has(model)) {
+          noThinkingCfg.add(model); attempt--; continue; // retry same model without thinkingConfig
+        }
         if (e?.status === 404) break; // model unavailable: try the next one, keep the real error
         lastErr = e;
         if (e?.status === 429) break; // quota exhausted for this model: switch now instead of waiting to retry it
