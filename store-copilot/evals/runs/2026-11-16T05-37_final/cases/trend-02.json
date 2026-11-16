@@ -1,0 +1,231 @@
+{
+  "case": {
+    "id": "trend-02",
+    "category": "trends",
+    "question": "Weekly revenue from Oct 5 to Nov 1",
+    "expect": {
+      "kind": "query",
+      "compare": "series",
+      "truthFn": "trend",
+      "args": {
+        "from": "2026-10-05",
+        "to": "2026-11-01",
+        "bucket": "week",
+        "metric": "revenue"
+      }
+    }
+  },
+  "expected": [
+    [
+      "2026-10-05",
+      6073.23
+    ],
+    [
+      "2026-10-12",
+      6272.02
+    ],
+    [
+      "2026-10-19",
+      6261.6
+    ],
+    [
+      "2026-10-26",
+      7944.63
+    ]
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      [
+        "2026-10-05",
+        6073.23
+      ],
+      [
+        "2026-10-12",
+        6272.02
+      ],
+      [
+        "2026-10-19",
+        6261.6
+      ],
+      [
+        "2026-10-26",
+        7944.63
+      ]
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Weekly revenue from Oct 5 to Nov 1 was $6,073.23 for the week starting 2026-10-05, $6,272.02 for 2026-10-12, $6,261.6 for 2026-10-19, and $7,944.63 for 2026-10-26.",
+    "result": {
+      "columns": [
+        "week starting",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "2026-10-05",
+          6073.23
+        ],
+        [
+          "2026-10-12",
+          6272.02
+        ],
+        [
+          "2026-10-19",
+          6261.6
+        ],
+        [
+          "2026-10-26",
+          7944.63
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 3098,
+      "outputTokens": 393,
+      "ms": 2816,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": false,
+          "ms": 1279,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1279
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 161,
+          "prompt": "<question>Weekly revenue from Oct 5 to Nov 1</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_revenue\",\n  \"groupBy\": \"week\",\n  \"dateFrom\": \"2025-10-05\",\n  \"dateTo\": \"2025-11-01\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 50,\n  \"assumptions\": [\n    \"Using year 2025 for October and November dates since 2026 dates would be in the future.\"\n  ]\n}",
+          "error": "dateFrom 2025-10-05 is over a year ago. A date with no year means the most recent one on or before 2026-11-13."
+        },
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 921,
+          "attempt": 2,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 921
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1444,
+          "outputTokens": 130,
+          "prompt": "<question>Weekly revenue from Oct 5 to Nov 1</question>\n\nYour previous plan was invalid:\ndateFrom 2025-10-05 is over a year ago. A date with no year means the most recent one on or before 2026-11-13.\nReturn a corrected plan.",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_revenue\",\n  \"groupBy\": \"week\",\n  \"dateFrom\": \"2026-10-05\",\n  \"dateTo\": \"2026-11-01\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 50,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-10-04 processed_at:<=2026-11-02"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 10,
+          "columns": [
+            "week starting",
+            "revenue"
+          ],
+          "rowCount": 4,
+          "rows": [
+            [
+              "2026-10-05",
+              6073.23
+            ],
+            [
+              "2026-10-12",
+              6272.02
+            ],
+            [
+              "2026-10-19",
+              6261.6
+            ],
+            [
+              "2026-10-26",
+              7944.63
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 601,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 601
+            }
+          ],
+          "prompt": "<question>Weekly revenue from Oct 5 to Nov 1</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"week starting\",\"revenue\"],\"rows\":[[\"2026-10-05\",6073.23],[\"2026-10-12\",6272.02],[\"2026-10-19\",6261.6],[\"2026-10-26\",7944.63]]}</data>",
+          "raw": "Weekly revenue from Oct 5 to Nov 1 was $6,073.23 for the week starting 2026-10-05, $6,272.02 for 2026-10-12, $6,261.6 for 2026-10-19, and $7,944.63 for 2026-10-26.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 268,
+          "outputTokens": 102
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "week",
+        "dateFrom": "2026-10-05",
+        "dateTo": "2026-11-01",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 50,
+        "assumptions": []
+      },
+      "planAttempts": 2,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-10-04 processed_at:<=2026-11-02"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

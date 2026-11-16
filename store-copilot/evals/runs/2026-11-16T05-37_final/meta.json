@@ -1,0 +1,25 @@
+{
+  "runId": "2026-11-16T05-37_final",
+  "label": "final",
+  "filter": null,
+  "startedAt": "2026-11-16T05:37:49.663Z",
+  "today": "2026-11-13",
+  "timezone": "America/New_York",
+  "git": {
+    "commit": "e5a2137",
+    "dirty": false
+  },
+  "node": "v22.23.5",
+  "modelChain": [
+    "gemini-3.5-flash-lite",
+    "gemini-3.5-flash",
+    "gemini-3.1-flash-lite"
+  ],
+  "caseCount": 30,
+  "hashes": {
+    "plannerPrompt": "43e74749ecbf",
+    "answerPrompt": "5767e6276aff",
+    "cases": "4abd4533299b",
+    "fixtures": "915747453664"
+  }
+}

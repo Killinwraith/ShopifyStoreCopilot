@@ -1,0 +1,63 @@
+{
+  "case": {
+    "id": "clar-02",
+    "category": "clarify",
+    "question": "Show me my top items",
+    "expect": {
+      "kind": "clarify"
+    }
+  },
+  "expected": {
+    "kind": "clarify"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "clarify"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "clarify",
+    "text": "Best by revenue or by units sold, and over what period?",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1381,
+      "outputTokens": 22,
+      "ms": 1064,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1064,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1064
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1381,
+          "outputTokens": 22,
+          "prompt": "<question>Show me my top items</question>",
+          "raw": "{\"kind\":\"clarify\",\"question\":\"Best by revenue or by units sold, and over what period?\"}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "clarify",
+        "question": "Best by revenue or by units sold, and over what period?"
+      },
+      "planAttempts": 1
+    }
+  }
+}

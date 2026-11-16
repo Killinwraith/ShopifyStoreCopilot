@@ -1,0 +1,219 @@
+{
+  "case": {
+    "id": "inv-03",
+    "category": "inventory",
+    "question": "Which products have 12 or fewer units left?",
+    "expect": {
+      "kind": "query",
+      "compare": "set",
+      "truthFn": "lowStock",
+      "args": {
+        "below": 13
+      }
+    }
+  },
+  "expected": [
+    "Notebook",
+    "Sticker Pack",
+    "Pen Set",
+    "Postcard Set",
+    "Cap"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Notebook",
+      "Sticker Pack",
+      "Pen Set",
+      "Postcard Set",
+      "Cap"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Based on an inventoryBelow assumption set to 13 to include items with 12 or fewer units left, the products with 12 or fewer units left are Postcard Set, Sticker Pack, Cap, Notebook, and Pen Set.",
+    "result": {
+      "columns": [
+        "product",
+        "type",
+        "in stock",
+        "price"
+      ],
+      "rows": [
+        [
+          "Postcard Set",
+          "Stationery",
+          5,
+          67.4
+        ],
+        [
+          "Sticker Pack",
+          "Stationery",
+          6,
+          74.34
+        ],
+        [
+          "Cap",
+          "Accessories",
+          10,
+          12.19
+        ],
+        [
+          "Notebook",
+          "Stationery",
+          10,
+          101.79
+        ],
+        [
+          "Pen Set",
+          "Stationery",
+          12,
+          37.9
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1675,
+      "outputTokens": 126,
+      "ms": 8456,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 904,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 904
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 77,
+          "prompt": "<question>Which products have 12 or fewer units left?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"inventory\",\"metric\":\"list\",\"groupBy\":\"none\",\"dateFrom\":null,\"dateTo\":null,\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":13},\"sort\":\"asc\",\"limit\":50,\"assumptions\":[\"inventoryBelow set to 13 to include items with 12 or fewer units left\"]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "products",
+          "variables": {
+            "q": ""
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 20
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 0,
+          "columns": [
+            "product",
+            "type",
+            "in stock",
+            "price"
+          ],
+          "rowCount": 5,
+          "rows": [
+            [
+              "Postcard Set",
+              "Stationery",
+              5,
+              67.4
+            ],
+            [
+              "Sticker Pack",
+              "Stationery",
+              6,
+              74.34
+            ],
+            [
+              "Cap",
+              "Accessories",
+              10,
+              12.19
+            ],
+            [
+              "Notebook",
+              "Stationery",
+              10,
+              101.79
+            ],
+            [
+              "Pen Set",
+              "Stationery",
+              12,
+              37.9
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 7550,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 7550
+            }
+          ],
+          "prompt": "<question>Which products have 12 or fewer units left?</question>\n<assumptions>[\"inventoryBelow set to 13 to include items with 12 or fewer units left\"]</assumptions>\n<data>{\"columns\":[\"product\",\"type\",\"in stock\",\"price\"],\"rows\":[[\"Postcard Set\",\"Stationery\",5,67.4],[\"Sticker Pack\",\"Stationery\",6,74.34],[\"Cap\",\"Accessories\",10,12.19],[\"Notebook\",\"Stationery\",10,101.79],[\"Pen Set\",\"Stationery\",12,37.9]]}</data>",
+          "raw": "Based on an inventoryBelow assumption set to 13 to include items with 12 or fewer units left, the products with 12 or fewer units left are Postcard Set, Sticker Pack, Cap, Notebook, and Pen Set.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 289,
+          "outputTokens": 49
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "inventory",
+        "metric": "list",
+        "groupBy": "none",
+        "dateFrom": null,
+        "dateTo": null,
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": 13
+        },
+        "sort": "asc",
+        "limit": 50,
+        "assumptions": [
+          "inventoryBelow set to 13 to include items with 12 or fewer units left"
+        ]
+      },
+      "planAttempts": 1,
+      "template": "products",
+      "variables": {
+        "q": ""
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

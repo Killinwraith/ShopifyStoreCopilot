@@ -1,0 +1,150 @@
+{
+  "case": {
+    "id": "tot-03",
+    "category": "totals",
+    "question": "Revenue from Oct 20 to Oct 26",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "revenue",
+      "args": {
+        "from": "2026-10-20",
+        "to": "2026-10-26"
+      }
+    }
+  },
+  "expected": 6118.17,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 6118.17,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Revenue from Oct 20 to Oct 26 was $6,118.17, based on the provided table.",
+    "result": {
+      "columns": [
+        "all",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "all",
+          6118.17
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1587,
+      "outputTokens": 106,
+      "ms": 1451,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 790,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 790
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1387,
+          "outputTokens": 78,
+          "prompt": "<question>Revenue from Oct 20 to Oct 26</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"sum_revenue\",\"groupBy\":\"none\",\"dateFrom\":\"2026-10-20\",\"dateTo\":\"2026-10-26\",\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":10,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-10-19 processed_at:<=2026-10-27"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 9,
+          "columns": [
+            "all",
+            "revenue"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              6118.17
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 649,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 649
+            }
+          ],
+          "prompt": "<question>Revenue from Oct 20 to Oct 26</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"revenue\"],\"rows\":[[\"all\",6118.17]]}</data>",
+          "raw": "Revenue from Oct 20 to Oct 26 was $6,118.17, based on the provided table.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 200,
+          "outputTokens": 28
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "none",
+        "dateFrom": "2026-10-20",
+        "dateTo": "2026-10-26",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-10-19 processed_at:<=2026-10-27"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

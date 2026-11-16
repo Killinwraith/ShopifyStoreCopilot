@@ -1,0 +1,150 @@
+{
+  "case": {
+    "id": "tot-07",
+    "category": "totals",
+    "question": "How many units did I sell yesterday?",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "units",
+      "args": {
+        "from": "2026-11-12",
+        "to": "2026-11-12"
+      }
+    }
+  },
+  "expected": 17,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 17,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "You sold 17 units yesterday.",
+    "result": {
+      "columns": [
+        "all",
+        "units"
+      ],
+      "rows": [
+        [
+          "all",
+          17
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1574,
+      "outputTokens": 138,
+      "ms": 1392,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 936,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 936
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1383,
+          "outputTokens": 130,
+          "prompt": "<question>How many units did I sell yesterday?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_units\",\n  \"groupBy\": \"none\",\n  \"dateFrom\": \"2026-11-12\",\n  \"dateTo\": \"2026-11-12\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 10,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-11-11 processed_at:<=2026-11-13"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 13,
+          "columns": [
+            "all",
+            "units"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              17
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 441,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 441
+            }
+          ],
+          "prompt": "<question>How many units did I sell yesterday?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"units\"],\"rows\":[[\"all\",17]]}</data>",
+          "raw": "You sold 17 units yesterday.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 191,
+          "outputTokens": 8
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "none",
+        "dateFrom": "2026-11-12",
+        "dateTo": "2026-11-12",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-11-11 processed_at:<=2026-11-13"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

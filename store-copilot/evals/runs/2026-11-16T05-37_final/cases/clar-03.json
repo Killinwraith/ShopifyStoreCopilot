@@ -1,0 +1,63 @@
+{
+  "case": {
+    "id": "clar-03",
+    "category": "clarify",
+    "question": "How did my products do?",
+    "expect": {
+      "kind": "clarify"
+    }
+  },
+  "expected": {
+    "kind": "clarify"
+  },
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": {
+      "kind": "clarify"
+    },
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "clarify",
+    "text": "Would you like to see products ranked by revenue or by units sold, and over what time period?",
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1381,
+      "outputTokens": 29,
+      "ms": 1019,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1019,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1019
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1381,
+          "outputTokens": 29,
+          "prompt": "<question>How did my products do?</question>",
+          "raw": "{\"kind\":\"clarify\",\"question\":\"Would you like to see products ranked by revenue or by units sold, and over what time period?\"}"
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "clarify",
+        "question": "Would you like to see products ranked by revenue or by units sold, and over what time period?"
+      },
+      "planAttempts": 1
+    }
+  }
+}

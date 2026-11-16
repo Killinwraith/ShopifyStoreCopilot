@@ -1,0 +1,156 @@
+{
+  "case": {
+    "id": "rank-05",
+    "category": "rankings",
+    "question": "What was my best-selling product by revenue last week?",
+    "expect": {
+      "kind": "query",
+      "compare": "ranked",
+      "truthFn": "topProducts",
+      "args": {
+        "from": "2026-11-02",
+        "to": "2026-11-08",
+        "by": "revenue",
+        "limit": 1
+      }
+    }
+  },
+  "expected": [
+    "Hoodie"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Hoodie"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Your best-selling product by revenue last week was Hoodie, with a revenue of $827.84.",
+    "result": {
+      "columns": [
+        "product",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "Hoodie",
+          827.84
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1587,
+      "outputTokens": 153,
+      "ms": 2717,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 2231,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 2231
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1387,
+          "outputTokens": 129,
+          "prompt": "<question>What was my best-selling product by revenue last week?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_revenue\",\n  \"groupBy\": \"product\",\n  \"dateFrom\": \"2026-11-02\",\n  \"dateTo\": \"2026-11-08\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 1,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-11-01 processed_at:<=2026-11-09"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 10,
+          "columns": [
+            "product",
+            "revenue"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "Hoodie",
+              827.84
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 474,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 474
+            }
+          ],
+          "prompt": "<question>What was my best-selling product by revenue last week?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product\",\"revenue\"],\"rows\":[[\"Hoodie\",827.84]]}</data>",
+          "raw": "Your best-selling product by revenue last week was Hoodie, with a revenue of $827.84.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 200,
+          "outputTokens": 24
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product",
+        "dateFrom": "2026-11-02",
+        "dateTo": "2026-11-08",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 1,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-11-01 processed_at:<=2026-11-09"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

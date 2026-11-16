@@ -1,0 +1,150 @@
+{
+  "case": {
+    "id": "tot-01",
+    "category": "totals",
+    "question": "What were total sales last week?",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "revenue",
+      "args": {
+        "from": "2026-11-02",
+        "to": "2026-11-08"
+      }
+    }
+  },
+  "expected": 4993.15,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 4993.15,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Total sales last week were $4,993.15.",
+    "result": {
+      "columns": [
+        "all",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "all",
+          4993.15
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1577,
+      "outputTokens": 145,
+      "ms": 3424,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 2702,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 2702
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1382,
+          "outputTokens": 130,
+          "prompt": "<question>What were total sales last week?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_revenue\",\n  \"groupBy\": \"none\",\n  \"dateFrom\": \"2026-11-02\",\n  \"dateTo\": \"2026-11-08\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 10,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-11-01 processed_at:<=2026-11-09"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 11,
+          "columns": [
+            "all",
+            "revenue"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              4993.15
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 702,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 702
+            }
+          ],
+          "prompt": "<question>What were total sales last week?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"revenue\"],\"rows\":[[\"all\",4993.15]]}</data>",
+          "raw": "Total sales last week were $4,993.15.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 195,
+          "outputTokens": 15
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "none",
+        "dateFrom": "2026-11-02",
+        "dateTo": "2026-11-08",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-11-01 processed_at:<=2026-11-09"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

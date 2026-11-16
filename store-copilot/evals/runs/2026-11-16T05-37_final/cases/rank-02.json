@@ -1,0 +1,196 @@
+{
+  "case": {
+    "id": "rank-02",
+    "category": "rankings",
+    "question": "Top 5 products by revenue this month",
+    "expect": {
+      "kind": "query",
+      "compare": "ranked",
+      "truthFn": "topProducts",
+      "args": {
+        "from": "2026-11-01",
+        "to": "2026-11-13",
+        "by": "revenue",
+        "limit": 5
+      }
+    }
+  },
+  "expected": [
+    "Hoodie",
+    "Joggers",
+    "Sticker Pack",
+    "Classic Tee",
+    "Espresso Cup"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Hoodie",
+      "Joggers",
+      "Sticker Pack",
+      "Classic Tee",
+      "Espresso Cup"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming the data is correct, the top products by revenue this month are Hoodie with $1,966.12, Joggers with $839.52, and Sticker Pack with $817.74.",
+    "result": {
+      "columns": [
+        "product",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "Hoodie",
+          1966.12
+        ],
+        [
+          "Joggers",
+          839.52
+        ],
+        [
+          "Sticker Pack",
+          817.74
+        ],
+        [
+          "Classic Tee",
+          753.2
+        ],
+        [
+          "Espresso Cup",
+          679.2
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1626,
+      "outputTokens": 178,
+      "ms": 1755,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 876,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 876
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1384,
+          "outputTokens": 129,
+          "prompt": "<question>Top 5 products by revenue this month</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_revenue\",\n  \"groupBy\": \"product\",\n  \"dateFrom\": \"2026-11-01\",\n  \"dateTo\": \"2026-11-13\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 5,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-10-31 processed_at:<=2026-11-14"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 9,
+          "columns": [
+            "product",
+            "revenue"
+          ],
+          "rowCount": 5,
+          "rows": [
+            [
+              "Hoodie",
+              1966.12
+            ],
+            [
+              "Joggers",
+              839.52
+            ],
+            [
+              "Sticker Pack",
+              817.74
+            ],
+            [
+              "Classic Tee",
+              753.2
+            ],
+            [
+              "Espresso Cup",
+              679.2
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 866,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 866
+            }
+          ],
+          "prompt": "<question>Top 5 products by revenue this month</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product\",\"revenue\"],\"rows\":[[\"Hoodie\",1966.12],[\"Joggers\",839.52],[\"Sticker Pack\",817.74],[\"Classic Tee\",753.2],[\"Espresso Cup\",679.2]]}</data>",
+          "raw": "Assuming the data is correct, the top products by revenue this month are Hoodie with $1,966.12, Joggers with $839.52, and Sticker Pack with $817.74.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 242,
+          "outputTokens": 49
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "product",
+        "dateFrom": "2026-11-01",
+        "dateTo": "2026-11-13",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 5,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-10-31 processed_at:<=2026-11-14"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

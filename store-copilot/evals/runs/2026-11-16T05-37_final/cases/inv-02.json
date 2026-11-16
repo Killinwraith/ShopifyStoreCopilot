@@ -1,0 +1,145 @@
+{
+  "case": {
+    "id": "inv-02",
+    "category": "inventory",
+    "question": "What's out of stock right now?",
+    "expect": {
+      "kind": "query",
+      "compare": "set",
+      "truthFn": "lowStock",
+      "args": {
+        "below": 1
+      }
+    }
+  },
+  "expected": [],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming out of stock is defined as inventory level below 1, there are currently no products out of stock.",
+    "result": {
+      "columns": [
+        "product",
+        "type",
+        "in stock",
+        "price"
+      ],
+      "rows": []
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1588,
+      "outputTokens": 90,
+      "ms": 1437,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 914,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 914
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1384,
+          "outputTokens": 68,
+          "prompt": "<question>What's out of stock right now?</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"inventory\",\"metric\":\"list\",\"groupBy\":\"none\",\"dateFrom\":null,\"dateTo\":null,\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":1},\"sort\":\"asc\",\"limit\":50,\"assumptions\":[\"Out of stock defined as inventory level below 1\"]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "products",
+          "variables": {
+            "q": ""
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 20
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 0,
+          "columns": [
+            "product",
+            "type",
+            "in stock",
+            "price"
+          ],
+          "rowCount": 0,
+          "rows": []
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 521,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 521
+            }
+          ],
+          "prompt": "<question>What's out of stock right now?</question>\n<assumptions>[\"Out of stock defined as inventory level below 1\"]</assumptions>\n<data>{\"columns\":[\"product\",\"type\",\"in stock\",\"price\"],\"rows\":[]}</data>",
+          "raw": "Assuming out of stock is defined as inventory level below 1, there are currently no products out of stock.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 204,
+          "outputTokens": 22
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "inventory",
+        "metric": "list",
+        "groupBy": "none",
+        "dateFrom": null,
+        "dateTo": null,
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": 1
+        },
+        "sort": "asc",
+        "limit": 50,
+        "assumptions": [
+          "Out of stock defined as inventory level below 1"
+        ]
+      },
+      "planAttempts": 1,
+      "template": "products",
+      "variables": {
+        "q": ""
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

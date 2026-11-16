@@ -1,0 +1,290 @@
+{
+  "case": {
+    "id": "trend-03",
+    "category": "trends",
+    "question": "Daily revenue from Nov 1 to Nov 7",
+    "expect": {
+      "kind": "query",
+      "compare": "series",
+      "truthFn": "trend",
+      "args": {
+        "from": "2026-11-01",
+        "to": "2026-11-07",
+        "bucket": "day",
+        "metric": "revenue"
+      }
+    }
+  },
+  "expected": [
+    [
+      "2026-11-01",
+      1223.86
+    ],
+    [
+      "2026-11-02",
+      597.27
+    ],
+    [
+      "2026-11-03",
+      298.56
+    ],
+    [
+      "2026-11-04",
+      536.27
+    ],
+    [
+      "2026-11-05",
+      395.31
+    ],
+    [
+      "2026-11-06",
+      2133.83
+    ],
+    [
+      "2026-11-07",
+      0
+    ]
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      [
+        "2026-11-01",
+        1223.86
+      ],
+      [
+        "2026-11-02",
+        597.27
+      ],
+      [
+        "2026-11-03",
+        298.56
+      ],
+      [
+        "2026-11-04",
+        536.27
+      ],
+      [
+        "2026-11-05",
+        395.31
+      ],
+      [
+        "2026-11-06",
+        2133.83
+      ],
+      [
+        "2026-11-07",
+        0
+      ]
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Daily revenue from November 1 to November 7 ranged from $0 to $2,133.83, with the highest earnings recorded on November 6 at $2,133.83 and November 1 at $1,223.86.",
+    "result": {
+      "columns": [
+        "day",
+        "revenue"
+      ],
+      "rows": [
+        [
+          "2026-11-01",
+          1223.86
+        ],
+        [
+          "2026-11-02",
+          597.27
+        ],
+        [
+          "2026-11-03",
+          298.56
+        ],
+        [
+          "2026-11-04",
+          536.27
+        ],
+        [
+          "2026-11-05",
+          395.31
+        ],
+        [
+          "2026-11-06",
+          2133.83
+        ],
+        [
+          "2026-11-07",
+          0
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.1-flash-lite",
+        "gemini-3.1-flash-lite"
+      ],
+      "inputTokens": 1704,
+      "outputTokens": 137,
+      "ms": 6149,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 2832,
+          "attempt": 1,
+          "model": "gemini-3.1-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 181
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 125
+            },
+            {
+              "model": "gemini-3.1-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 2526
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 78,
+          "prompt": "<question>Daily revenue from Nov 1 to Nov 7</question>",
+          "raw": "{\"kind\":\"query\",\"entity\":\"orders\",\"metric\":\"sum_revenue\",\"groupBy\":\"day\",\"dateFrom\":\"2026-11-01\",\"dateTo\":\"2026-11-07\",\"filter\":{\"productTitleContains\":null,\"productType\":null,\"inventoryBelow\":null},\"sort\":\"desc\",\"limit\":50,\"assumptions\":[]}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-10-31 processed_at:<=2026-11-08"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 14,
+          "columns": [
+            "day",
+            "revenue"
+          ],
+          "rowCount": 7,
+          "rows": [
+            [
+              "2026-11-01",
+              1223.86
+            ],
+            [
+              "2026-11-02",
+              597.27
+            ],
+            [
+              "2026-11-03",
+              298.56
+            ],
+            [
+              "2026-11-04",
+              536.27
+            ],
+            [
+              "2026-11-05",
+              395.31
+            ],
+            [
+              "2026-11-06",
+              2133.83
+            ],
+            [
+              "2026-11-07",
+              0
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 3299,
+          "model": "gemini-3.1-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 118
+            },
+            {
+              "model": "gemini-3.5-flash",
+              "attempt": 1,
+              "ok": false,
+              "status": 429,
+              "error": "{\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: ge",
+              "ms": 125
+            },
+            {
+              "model": "gemini-3.1-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 3056
+            }
+          ],
+          "prompt": "<question>Daily revenue from Nov 1 to Nov 7</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"day\",\"revenue\"],\"rows\":[[\"2026-11-01\",1223.86],[\"2026-11-02\",597.27],[\"2026-11-03\",298.56],[\"2026-11-04\",536.27],[\"2026-11-05\",395.31],[\"2026-11-06\",2133.83],[\"2026-11-07\",0]]}</data>",
+          "raw": "Daily revenue from November 1 to November 7 ranged from $0 to $2,133.83, with the highest earnings recorded on November 6 at $2,133.83 and November 1 at $1,223.86.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 318,
+          "outputTokens": 59
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_revenue",
+        "groupBy": "day",
+        "dateFrom": "2026-11-01",
+        "dateTo": "2026-11-07",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 50,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-10-31 processed_at:<=2026-11-08"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

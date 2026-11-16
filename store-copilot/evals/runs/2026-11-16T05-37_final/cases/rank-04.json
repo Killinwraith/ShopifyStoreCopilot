@@ -1,0 +1,176 @@
+{
+  "case": {
+    "id": "rank-04",
+    "category": "rankings",
+    "question": "Top 3 product types by units sold last month",
+    "expect": {
+      "kind": "query",
+      "compare": "ranked",
+      "truthFn": "topTypes",
+      "args": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "by": "units",
+        "limit": 3
+      }
+    }
+  },
+  "expected": [
+    "Stationery",
+    "Accessories",
+    "Apparel"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Stationery",
+      "Accessories",
+      "Apparel"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "The top 3 product types by units sold last month are Stationery with 140 units, Accessories with 135 units, and Apparel with 107 units.",
+    "result": {
+      "columns": [
+        "product type",
+        "units"
+      ],
+      "rows": [
+        [
+          "Stationery",
+          140
+        ],
+        [
+          "Accessories",
+          135
+        ],
+        [
+          "Apparel",
+          107
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1598,
+      "outputTokens": 168,
+      "ms": 2275,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1648,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1648
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 131,
+          "prompt": "<question>Top 3 product types by units sold last month</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_units\",\n  \"groupBy\": \"product_type\",\n  \"dateFrom\": \"2026-10-01\",\n  \"dateTo\": \"2026-10-31\",\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 3,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 7,
+          "columns": [
+            "product type",
+            "units"
+          ],
+          "rowCount": 3,
+          "rows": [
+            [
+              "Stationery",
+              140
+            ],
+            [
+              "Accessories",
+              135
+            ],
+            [
+              "Apparel",
+              107
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 618,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 618
+            }
+          ],
+          "prompt": "<question>Top 3 product types by units sold last month</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product type\",\"units\"],\"rows\":[[\"Stationery\",140],[\"Accessories\",135],[\"Apparel\",107]]}</data>",
+          "raw": "The top 3 product types by units sold last month are Stationery with 140 units, Accessories with 135 units, and Apparel with 107 units.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 212,
+          "outputTokens": 37
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "product_type",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 3,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

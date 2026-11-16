@@ -1,0 +1,175 @@
+{
+  "case": {
+    "id": "inv-01",
+    "category": "inventory",
+    "question": "Which products have fewer than 10 in stock?",
+    "expect": {
+      "kind": "query",
+      "compare": "set",
+      "truthFn": "lowStock",
+      "args": {
+        "below": 10
+      }
+    }
+  },
+  "expected": [
+    "Sticker Pack",
+    "Postcard Set"
+  ],
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": [
+      "Sticker Pack",
+      "Postcard Set"
+    ],
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming all products are listed, Postcard Set and Sticker Pack have fewer than 10 in stock, with 5 and 6 respectively.",
+    "result": {
+      "columns": [
+        "product",
+        "type",
+        "in stock",
+        "price"
+      ],
+      "rows": [
+        [
+          "Postcard Set",
+          "Stationery",
+          5,
+          67.4
+        ],
+        [
+          "Sticker Pack",
+          "Stationery",
+          6,
+          74.34
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1610,
+      "outputTokens": 139,
+      "ms": 2139,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 1053,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1053
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1386,
+          "outputTokens": 110,
+          "prompt": "<question>Which products have fewer than 10 in stock?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"inventory\",\n  \"metric\": \"list\",\n  \"groupBy\": \"none\",\n  \"dateFrom\": null,\n  \"dateTo\": null,\n  \"filter\": {\n    \"productTitleContains\": null,\n    \"productType\": null,\n    \"inventoryBelow\": 10\n  },\n  \"sort\": \"asc\",\n  \"limit\": 50,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 1,
+          "template": "products",
+          "variables": {
+            "q": ""
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 20
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 1,
+          "columns": [
+            "product",
+            "type",
+            "in stock",
+            "price"
+          ],
+          "rowCount": 2,
+          "rows": [
+            [
+              "Postcard Set",
+              "Stationery",
+              5,
+              67.4
+            ],
+            [
+              "Sticker Pack",
+              "Stationery",
+              6,
+              74.34
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 1083,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 1083
+            }
+          ],
+          "prompt": "<question>Which products have fewer than 10 in stock?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"product\",\"type\",\"in stock\",\"price\"],\"rows\":[[\"Postcard Set\",\"Stationery\",5,67.4],[\"Sticker Pack\",\"Stationery\",6,74.34]]}</data>",
+          "raw": "Assuming all products are listed, Postcard Set and Sticker Pack have fewer than 10 in stock, with 5 and 6 respectively.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 224,
+          "outputTokens": 29
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "inventory",
+        "metric": "list",
+        "groupBy": "none",
+        "dateFrom": null,
+        "dateTo": null,
+        "filter": {
+          "productTitleContains": null,
+          "productType": null,
+          "inventoryBelow": 10
+        },
+        "sort": "asc",
+        "limit": 50,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "products",
+      "variables": {
+        "q": ""
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}

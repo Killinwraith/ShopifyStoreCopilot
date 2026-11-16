@@ -1,0 +1,151 @@
+{
+  "case": {
+    "id": "tot-06",
+    "category": "totals",
+    "question": "How many hoodies did I sell in October?",
+    "expect": {
+      "kind": "query",
+      "compare": "value",
+      "truthFn": "units",
+      "args": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "titleContains": "hoodie"
+      }
+    }
+  },
+  "expected": 17,
+  "grade": {
+    "planOk": true,
+    "pass": true,
+    "want": 17,
+    "why": "",
+    "failedAt": null
+  },
+  "response": {
+    "kind": "answer",
+    "text": "Assuming \"all\" represents the total units sold, you sold 17 units in October.",
+    "result": {
+      "columns": [
+        "all",
+        "units"
+      ],
+      "rows": [
+        [
+          "all",
+          17
+        ]
+      ]
+    },
+    "trace": {
+      "models": [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash-lite"
+      ],
+      "inputTokens": 1576,
+      "outputTokens": 151,
+      "ms": 1392,
+      "steps": [
+        {
+          "step": "plan",
+          "ok": true,
+          "ms": 835,
+          "attempt": 1,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 835
+            }
+          ],
+          "truncated": false,
+          "inputTokens": 1384,
+          "outputTokens": 132,
+          "prompt": "<question>How many hoodies did I sell in October?</question>",
+          "raw": "{\n  \"kind\": \"query\",\n  \"entity\": \"orders\",\n  \"metric\": \"sum_units\",\n  \"groupBy\": \"none\",\n  \"dateFrom\": \"2026-10-01\",\n  \"dateTo\": \"2026-10-31\",\n  \"filter\": {\n    \"productTitleContains\": \"hoodie\",\n    \"productType\": null,\n    \"inventoryBelow\": null\n  },\n  \"sort\": \"desc\",\n  \"limit\": 10,\n  \"assumptions\": []\n}"
+        },
+        {
+          "step": "fetch",
+          "ok": true,
+          "ms": 2,
+          "template": "orders",
+          "variables": {
+            "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+          },
+          "pages": 0,
+          "queryCost": 0,
+          "capped": false,
+          "rowCount": 150
+        },
+        {
+          "step": "aggregate",
+          "ok": true,
+          "ms": 11,
+          "columns": [
+            "all",
+            "units"
+          ],
+          "rowCount": 1,
+          "rows": [
+            [
+              "all",
+              17
+            ]
+          ]
+        },
+        {
+          "step": "answer",
+          "ok": true,
+          "ms": 543,
+          "model": "gemini-3.5-flash-lite",
+          "llmAttempts": [
+            {
+              "model": "gemini-3.5-flash-lite",
+              "attempt": 1,
+              "ok": true,
+              "ms": 543
+            }
+          ],
+          "prompt": "<question>How many hoodies did I sell in October?</question>\n<assumptions>[]</assumptions>\n<data>{\"columns\":[\"all\",\"units\"],\"rows\":[[\"all\",17]]}</data>",
+          "raw": "Assuming \"all\" represents the total units sold, you sold 17 units in October.",
+          "truncated": false,
+          "numberCheck": "passed",
+          "usedFallback": false,
+          "unmatched": [],
+          "inputTokens": 192,
+          "outputTokens": 19
+        }
+      ],
+      "today": "2026-11-13",
+      "timezone": "America/New_York",
+      "plan": {
+        "kind": "query",
+        "entity": "orders",
+        "metric": "sum_units",
+        "groupBy": "none",
+        "dateFrom": "2026-10-01",
+        "dateTo": "2026-10-31",
+        "filter": {
+          "productTitleContains": "hoodie",
+          "productType": null,
+          "inventoryBelow": null
+        },
+        "sort": "desc",
+        "limit": 10,
+        "assumptions": []
+      },
+      "planAttempts": 1,
+      "template": "orders",
+      "variables": {
+        "q": "processed_at:>=2026-09-30 processed_at:<=2026-11-01"
+      },
+      "pages": 0,
+      "queryCost": 0,
+      "capped": false,
+      "numberCheck": "passed",
+      "usedFallback": false
+    }
+  }
+}
